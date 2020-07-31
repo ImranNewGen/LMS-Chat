@@ -1,0 +1,595 @@
+/* CUSTOM CSS */
+body {
+  font-family: "Source Sans Pro", sans-serif !important;
+  color: #ababab !important;
+  background-color: #f4f6f9 !important;
+}
+
+.hov-effect:hover {
+  border-bottom: 2px solid #ff2260;
+}
+
+.vertical-bar {
+  border-left: 1px solid #e8e8e8;
+  margin-left: 16px;
+}
+
+.content-wrapper {
+  margin-left: 0px !important;
+}
+.container-fluid-content {
+  max-width: 64rem !important;
+  width: 100%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.nav-bg {
+  background-color: #ffffff !important;
+}
+
+.layout-margin {
+  padding-left: 56px !important;
+  padding-right: 56px !important;
+}
+.side-layout-margin {
+  padding-left: 56px !important;
+  padding-right: 56px !important;
+}
+
+.nav-bottom {
+  border-bottom: 1px solid #e4e4e4;
+}
+
+.profile-image {
+  padding-top: 8px;
+  margin-right: 0;
+  padding-right: 0;
+}
+
+.profile-info {
+  padding: 5px 0px 5px 0px !important;
+}
+
+.text-live {
+  color: #ff3462;
+}
+
+.red-border {
+  border: 1px solid #ff799d;
+}
+
+.thumbnail {
+  position: relative;
+  display: inline-block;
+}
+
+/***********************  CSS FOR SIDE MENU BAR START ********************/
+.sidebar {
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+
+.main-sidebar {
+  width: 200px !important;
+}
+
+.sidebar-mini.sidebar-collapse .main-sidebar {
+  width: 70px !important;
+}
+
+body:not(.sidebar-mini-md) .main-header {
+  margin-left: 200px !important;
+}
+
+body:not(.sidebar-mini-md) .content-wrapper {
+  margin-left: 200px !important;
+}
+
+.sidebar-mini.sidebar-collapse .main-header {
+  margin-left: 70px !important;
+}
+
+.sidebar-mini.sidebar-collapse .content-wrapper {
+  margin-left: 70px !important;
+}
+
+.main-sidebar,
+.sidebar {
+  overflow-x: hidden !important;
+}
+
+.sidebar-collapse .main-sidebar {
+  background-image: linear-gradient(180deg, #ff736b, #ff2260) !important;
+  background-size: auto !important;
+  border-radius: 50% 50% 50% 50% / 3% 3% 3% 3% !important;
+}
+.main-sidebar {
+  background-image: linear-gradient(180deg, #ff736b, #ff2260) !important;
+  background-size: auto !important;
+}
+.nav-sidebar li a p,
+.nav-sidebar li a .nav-icon {
+  color: #f4f6f9 !important;
+  font-size: 18px !important;
+}
+.nav-sidebar li a p {
+  font-family: "Source Sans Pro", sans-serif !important;
+}
+.sidebar-collapse .nav-sidebar li:hover {
+  background-color: #edf0f5 !important;
+  border-radius: 18% 0% 0% 18% / 43% 0% 0% 43% !important;
+}
+.nav-sidebar li:hover {
+  background-color: #edf0f5 !important;
+  border-radius: 7% 50% 50% 7% / 44% 0% 0% 40% !important;
+}
+.nav-sidebar li:hover a p {
+  color: #ff3462 !important;
+}
+.nav-sidebar .nav-item:hover .nav-link .nav-icon {
+  color: #ff3462 !important;
+}
+/***********************  CSS FOR SIDE MENU BAR END ********************/
+
+.text-over-img {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  transform: translate(-50%, -50%);
+  color: white;
+}
+/* ***************************PROGRESS PART CSS START****************************/
+/* Total Classes */
+.progress1 {
+  background-image: linear-gradient(90deg, #553eff, #00f0ff) !important;
+}
+/* Average Attendance */
+.progress2 {
+  background-image: linear-gradient(90deg, #423eff, #fe3eff) !important;
+}
+/* Average Participation */
+.progress3 {
+  background-image: linear-gradient(90deg, #ff2260, #ff736b) !important;
+}
+.progress-height {
+  height: 4px !important;
+}
+.prog-text {
+  font-size: 14px;
+  margin-right: 20px;
+  font-family: "Source Sans Pro", sans-serif !important;
+  color: #ababab;
+}
+.tot-percent {
+  font-family: "Source Sans Pro", sans-serif !important;
+  color: #ababab;
+}
+.tot-value {
+  font-family: "Source Sans Pro", sans-serif !important;
+}
+/* ***************************PROGRESS PART CSS END***************************/
+
+/* Extra small devices (portrait phones, less than 576px) */
+@media screen and (max-width: 575.98px) {
+  .info1 {
+    font-size: 3.6vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info2 {
+    font-size: 6.7vw;
+    font-weight: bold;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info3 {
+    font-size: 2.8vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  /* calendar */
+  .calender-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .calender-img {
+    position: absolute;
+    top: 9px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .calender-text {
+    padding-left: 82px;
+    margin-top: 11px;
+    font-size: 3vw;
+    color: #808285;
+    text-transform: uppercase;
+  }
+  /* attendance */
+  .attendance-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .attendance-img {
+    position: absolute;
+    top: 8px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .attendance-text {
+    padding-left: 82px;
+    margin-top: 16px;
+    font-size: 3vw;
+    color: #808285;
+    text-transform: uppercase;
+  }
+
+  /*  */
+  .thumbnail img {
+    width: 574px !important;
+  }
+  .navbar-badge {
+    left: 16px !important;
+    right: initial !important;
+  }
+  .info {
+    padding: 10px 5px 5px 16px !important;
+  }
+  .profile-info {
+    padding: 5px 0px 5px 16px !important;
+  }
+}
+
+/************************************ my_profile.html start ***********************************************/
+.widget-user .widget-user-image > img {
+  height: 120px !important;
+  width: 120px !important;
+  border: 1px solid #e2e2e2 !important;
+  background-color: white !important;
+  padding: 4px !important;
+}
+
+/************************************ my_profile.html End ***********************************************/
+
+/************************************ account_info.html start ***********************************************/
+.card-primary.card-outline-tabs > .card-header a.active {
+  border-top: none !important;
+  border-bottom: 2px solid #ff5967 !important;
+}
+.card.card-outline-tabs .card-header a {
+  border-top: none !important;
+}
+#custom-tabs-four-tab a,
+.d-flex td {
+  color: #808285 !important;
+}
+label:not(.form-check-label):not(.custom-file-label),
+.form-control {
+  font-weight: normal !important;
+  color: #808285 !important;
+}
+.form-control {
+  font-family: "Source Sans Pro", sans-serif !important;
+  font-size: 16px !important;
+}
+input[type="password"]:focus {
+  border: 1px solid #ff5967 !important;
+}
+.field-icon {
+  float: right;
+  margin-top: -30px;
+  left: -16px;
+  position: relative;
+  z-index: 2;
+}
+.btn-update {
+  background-image: linear-gradient(90deg, #ff736b, #ff2260) !important;
+  color: #e2e2e2 !important;
+  padding-left: 32px !important;
+  padding-right: 32px !important;
+}
+
+/************************************ account_info.html End ***********************************************/
+
+/************************************ login.html Start ***********************************************/
+.bg-login-body {
+  background-image: linear-gradient(90deg, #ff736b, #ff2260) !important;
+}
+/************************************ login.html End ***********************************************/
+
+/* Small devices (landscape phones, 576px and up) */
+@media screen and (min-width: 576px) and (max-width: 767.98px) {
+  .info1 {
+    font-size: 3.6vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info2 {
+    font-size: 6.7vw;
+    font-weight: bold;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info3 {
+    font-size: 2.8vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  /* calendar */
+  .calender-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .calender-img {
+    position: absolute;
+    top: 9px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .calender-text {
+    padding-left: 82px;
+    margin-top: 11px;
+    font-size: 2.5vw;
+    color: #808285;
+    text-transform: uppercase;
+  }
+  /* attendance */
+  .attendance-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .attendance-img {
+    position: absolute;
+    top: 8px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .attendance-text {
+    padding-left: 82px;
+    margin-top: 16px;
+    font-size: 2.5vw;
+    color: #808285;
+    text-transform: uppercase;
+  }
+
+  /*  */
+  .thumbnail img {
+    width: 766px !important;
+  }
+
+  .navbar-badge {
+    left: 16px !important;
+    right: initial !important;
+  }
+  .info {
+    padding: 10px 5px 5px 16px !important;
+  }
+  .profile-info {
+    padding: 5px 0px 5px 16px !important;
+  }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media screen and (min-width: 768px) and (max-width: 991.98px) {
+  .info1 {
+    font-size: 1.6vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info2 {
+    font-size: 1.7vw;
+    font-weight: bold;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info3 {
+    font-size: 1.2vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  /* calendar */
+  .calender-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .calender-img {
+    position: absolute;
+    top: 9px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .calender-text {
+    padding-left: 82px;
+    font-size: 1.5vw;
+    margin-top: 11px;
+    color: #808285;
+    text-transform: uppercase;
+  }
+  /* attendance */
+  .attendance-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .attendance-img {
+    position: absolute;
+    top: 8px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .attendance-text {
+    padding-left: 82px;
+    margin-top: 16px;
+    font-size: 1.5vw;
+    color: #808285;
+    text-transform: uppercase;
+  }
+  .navbar-badge {
+    left: 16px !important;
+    right: initial !important;
+  }
+  .info {
+    padding: 10px 5px 5px 16px !important;
+  }
+  .profile-info {
+    padding: 5px 0px 5px 16px !important;
+  }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media screen and (min-width: 992px) and (max-width: 1199.98px) {
+  .info1 {
+    font-size: 1.3vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info2 {
+    font-size: 1.4vw;
+    font-weight: bold;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info3 {
+    font-size: 1vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  /* calendar */
+  .calender-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .calender-img {
+    position: absolute;
+    top: 9px;
+    left: 40px !important;
+    transform: translate(-50%, -50%);
+  }
+  .calender-text {
+    padding-left: 72px;
+    margin-top: 11px;
+    font-size: 1.3vw;
+    color: #808285;
+    text-transform: uppercase;
+  }
+  /* attendance */
+  .attendance-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .attendance-img {
+    position: absolute;
+    top: 8px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .attendance-text {
+    padding-left: 82px;
+    margin-top: 16px;
+    font-size: 1.3vw;
+    color: #808285;
+    text-transform: uppercase;
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media screen and (min-width: 1200px) {
+  .info1 {
+    font-size: 1.3vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info2 {
+    font-size: 1.4vw;
+    font-weight: bold;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+  .info3 {
+    font-size: 1vw;
+    color: white;
+    font-family: "Source Sans Pro", sans-serif !important;
+    line-height: 1.3;
+  }
+
+  /* calendar */
+  .calender-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .calender-img {
+    position: absolute;
+    top: 9px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .calender-text {
+    padding-left: 76px;
+    margin-top: 11px;
+    font-size: 1.2vw;
+    color: #808285;
+    text-transform: uppercase;
+  }
+  /* attendance */
+  .attendance-thumbnail {
+    position: relative;
+    display: inline-block;
+  }
+  .attendance-img {
+    position: absolute;
+    top: 8px;
+    left: 48px !important;
+    transform: translate(-50%, -50%);
+  }
+  .attendance-text {
+    padding-left: 76px;
+    font-size: 1.2vw;
+    margin-top: 16px;
+    color: #808285;
+    text-transform: uppercase;
+  }
+
+  /************************************ my_profile.html start ***********************************************/
+  .widget-user .widget-user-image {
+    left: 14% !important;
+    top: 104px !important;
+  }
+  .user-info {
+    left: 30%;
+    position: relative;
+    top: 10px;
+    max-width: max-content;
+  }
+  .info-color {
+    color: #000;
+  }
+  .badge {
+    font-size: 1vw !important;
+    color: #fff;
+    font-weight: normal !important;
+  }
+  .badge-bg {
+    background-image: linear-gradient(90deg, #ff2260, #ff736b) !important;
+    margin-left: 8px;
+  }
+
+  .card table td {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+  /************************************ my_profile.html End ***********************************************/
+}

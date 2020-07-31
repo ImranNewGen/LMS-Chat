@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="css/index.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <!-- Google Font: Source Sans Pro -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap"
+    rel="stylesheet">
+
+
+  <style>
+    /* ADJUST LAYOUT WIDTH  */
+    .layout-width {
+      max-width: 56rem !important;
+    }
+
+    #flip {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+    }
+
+    #panel {
+      position: fixed;
+      bottom: 36px;
+      right: 0;
+    }
+
+    #panel,
+    #flip {
+      padding: 5px;
+      text-align: center;
+      background-image: linear-gradient(90deg, #ff2260, #ff736b);
+      border: solid 1px #c3c3c3;
+      color: #fff;
+      padding: 8px;
+      width: 230px;
+    }
+
+    #panel {
+      display: none;
+    }
+
+    /**** Chat Popup Layout******/
+
+    .msg_box {
+      position: fixed;
+      bottom: -5px;
+      width: 250px;
+      background: white;
+      border-radius: 5px 5px 0px 0px;
+    }
+
+    .msg_head {
+      background-image: linear-gradient(90deg, #ff2260, #ff736b);
+      color: white;
+      padding: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px 5px 0px 0px;
+    }
+
+    .msg_body {
+      background: white;
+      border: solid 1px #c3c3c3;
+      height: 200px;
+      font-size: 12px;
+      padding: 15px;
+      overflow: auto;
+      overflow-x: hidden;
+    }
+
+    .msg_input {
+      width: 100%;
+      height: 40px;
+      border: 1px solid white;
+      border-top: 1px solid #DDDDDD;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    .close {
+      float: right;
+      cursor: pointer;
+    }
+
+    .minimize {
+      float: right;
+      cursor: pointer;
+      padding-right: 5px;
+
+    }
+
+    .msg-left {
+      position: relative;
+      background-image: linear-gradient(90deg, #ff2260, #ff736b);
+      color: #fff;
+      padding: 5px;
+      min-height: 10px;
+      margin-bottom: 5px;
+      margin-right: 10px;
+      border-radius: 5px;
+      word-break: break-all;
+    }
+
+    .msg-right {
+      background-image: linear-gradient(-90deg, #ff2260, #ff736b);
+      color: #fff;
+      padding: 5px;
+      min-height: 15px;
+      margin-bottom: 5px;
+      position: relative;
+      margin-left: 10px;
+      border-radius: 5px;
+      word-break: break-all;
+    }
+
+    #chat-sidebar {
+      /* width: 250px; */
+      border-radius: 5px 5px 0px 0px;
+    }
+
+    #sidebar-user-box {
+      padding: 4px;
+      margin-bottom: 4px;
+      font-size: 15px;
+      font-family: Calibri;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    #sidebar-user-box:hover {
+      border: solid 1px #fff;
+    }
+
+    #sidebar-user-box:after {
+      content: ".";
+      display: block;
+      height: 0;
+      clear: both;
+      visibility: hidden;
+    }
+
+    .chat-img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      float: left;
+    }
+
+    #slider-username {
+      float: left;
+      line-height: 30px;
+      margin-left: 5px;
+    }
+  </style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+  <div class="wrapper">
+
+    <!-- TOP NAVBAR START -->
+    <nav class="sticky-top main-header navbar navbar-expand-lg navbar-white navbar-light">
+      <div class="container-fluid layout-width">
+        <a href="#" class="mr-4">
+          <img src="img/logo.png" alt="Babylon Logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <!-- left side menu item -->
+          <ul class="navbar-nav">
+            <li class="nav-item vertical-bar">
+              <a href="#" class="nav-link hov-effect">Home</a>
+            </li>
+          </ul>
+          <!-- right side menu item -->
+          <ul class="navbar-nav ml-auto">
+            <!-- Email Dropdown Menu -->
+            <li class="nav-item dropdown">
+              <a class="nav-link hov-effect pt-3" data-toggle="dropdown" href="#">
+                <i class="far fa-envelope"></i>
+                <span class="badge badge-danger navbar-badge">3</span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        Brad Diesel
+                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">Call me whenever you can...</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>
+                        4 Hours
+                        Ago
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="img/ninad.png" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        John Pierce
+                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">I got your message bro</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>
+                        4 Hours
+                        Ago
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        Nora Silvester
+                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">The subject goes here</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>
+                        4 Hours
+                        Ago
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+              </div>
+            </li>
+            <!-- Alarm Dropdown Menu -->
+            <li class="nav-item dropdown">
+              <a class="nav-link hov-effect pt-3" data-toggle="dropdown" href="#">
+                <i class="far fa-bell"></i>
+                <span class="badge badge-danger navbar-badge">15</span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <span class="dropdown-item dropdown-header">15 Notifications</span>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <i class="fas fa-envelope mr-2"></i> 4 new messages
+                  <span class="float-right text-muted text-sm">3 mins</span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <i class="fas fa-users mr-2"></i> 8 friend requests
+                  <span class="float-right text-muted text-sm">12 hours</span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <i class="fas fa-file mr-2"></i> 3 new reports
+                  <span class="float-right text-muted text-sm">2 days</span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item dropdown-footer">See All
+                  Notifications</a>
+              </div>
+            </li>
+            <!-- Flag Dropdown Menu -->
+            <li class="nav-item dropdown mr-3">
+              <a class="nav-link hov-effect pt-3" data-toggle="dropdown" href="#">
+                <i class="far fa-flag"></i>
+                <span class="badge badge-danger navbar-badge">3</span>
+              </a>
+              <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        Brad Diesel
+                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">Call me whenever you can...</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>
+                        4 Hours
+                        Ago
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        John Pierce
+                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">I got your message bro</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>
+                        4 Hours
+                        Ago
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item">
+                  <!-- Message Start -->
+                  <div class="media">
+                    <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        Nora Silvester
+                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm">The subject goes here</p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i>
+                        4 Hours
+                        Ago
+                      </p>
+                    </div>
+                  </div>
+                  <!-- Message End -->
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+              </div>
+            </li>
+            <!-- Ninad Hossain Profile Menu-->
+            <li class="nav-item dropdown d-flex">
+              <div class="profile-image">
+                <img src="img/ninad.png" class="img-circle" alt="User Image">
+              </div>
+              <div class="profile-info">
+                <a class="dropdown-toggle d-block nav-link pr-0" data-toggle="dropdown" href="#" role="button"
+                  aria-haspopup="true" aria-expanded="false">Ninad
+                  Hossain</a>
+                <div class="dropdown-menu">
+                  <a class="dropdown-item" href="my_profile.html">My Profile</a>
+                  <a class="dropdown-item" href="account_info.html">Account Info</a>
+                  <a class="dropdown-item" href="#">Logout</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <!-- TOP NAVBAR END -->
+
+    <!-- LEFT SIDEBAR MENU START -->
+    <aside class="main-sidebar sidebar-no-expand elevation-4">
+      <div class="sidebar">
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" role="menu" data-accordion="false">
+            <li class="nav-item">
+              <a href="#" class="nav-link button-left" role="button">
+                <i class="nav-icon fa fa-fw fa-bars"></i>
+                <p></p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="super_admin_dashboard.html" class="nav-link">
+                <i class="nav-icon fas fa-border-all"></i>
+                <p>Dashboards</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon far fa-edit"></i>
+                <p>Registration</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon far fa-copy"></i>
+                <p>Package System</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon far fa-file-alt"></i>
+                <p>Billing System</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon far fa-file-powerpoint"></i>
+                <p>Payment System</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon far fa-sun"></i>
+                <p>Settings</p>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </aside>
+    <!-- LEFT SIDEBAR MENU END -->
+
+
+
+
+
+    <!-- PAGE CONTENT START -->
+    <div class="content-wrapper mt-5">
+      <div class="content">
+        <div class="container-fluid layout-width">
+
+          <!--  -->
+          <!-- Content Start -->
+          <div class="row mt-5">
+
+            <!-- left side content -->
+            <div class="col-sm-12 col-md-12 col-lg-8">
+              <!-- infobox start -->
+              <div class="row">
+                <!-- total teacher -->
+                <div class="col-sm-12 col-md-4 col-lg-4">
+                  <div class="thumbnail">
+                    <img src="img/total_teacher.png" class="img-fluid" alt="">
+                    <div class="text-over-img d-flex flex-column">
+                      <div class="info1">Total Teacher</div>
+                      <div class="info2">27</div>
+                      <div class="info3">Active 23</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- total student -->
+                <div class="col-sm-12 col-md-4 col-lg-4">
+                  <div class="thumbnail">
+                    <img src="img/total_student.png" class="img-fluid" alt="">
+                    <div class="text-over-img d-flex flex-column">
+                      <div class="info1">Total Student</div>
+                      <div class="info2">273</div>
+                      <div class="info3">Enrolled 223</div>
+                    </div>
+                  </div>
+                </div>
+                <!-- total course -->
+                <div class="col-sm-12 col-md-4 col-lg-4">
+                  <div class="thumbnail">
+                    <img src="img/total_course.png" class="img-fluid" alt="">
+                    <div class="text-over-img d-flex flex-column">
+                      <div class="info1">Total Course</div>
+                      <div class="info2">27</div>
+                      <div class="info3">Available 13</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- infobox end -->
+
+              <!-- attendance full div start -->
+              <div class="row p-2 mt-3">
+                <div class="col">
+                  <div class="info-box">
+                    <div class="info-box-content attendance-thumbnail">
+                      <img src="img/attendance.png" class="attendance-img mr-5" alt="">
+                      <span class="info-box-text attendance-text">Attendance</span>
+                      <div class="row">
+                        <!-- attendance left part -->
+                        <div class="col-8">
+                          <!-- select input part -->
+                          <div class="row p-2 mt-3">
+                            <div class="col-sm-12 col-md-4 col-lg-4">
+                              <!-- select -->
+                              <div class=" form-group">
+                                <select class="form-control">
+                                  <option value="">Select Class</option>
+                                  <option>1</option>
+                                  <option>2</option>
+                                  <option>3</option>
+                                  <option>4</option>
+                                  <option>5</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 col-lg-4">
+                              <!-- select -->
+                              <div class=" form-group">
+                                <select class="form-control">
+                                  <option value="">Select Subject</option>
+                                  <option>Bangla</option>
+                                  <option>English</option>
+                                  <option>Math</option>
+                                  <option>Physics</option>
+                                  <option>Chemistry</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4 col-lg-4">
+                              <div class=" form-group float-right">
+                                <img src="img/ok2.png" class="img-fluid btn p-0" type="button" alt="">
+                              </div>
+                            </div>
+                          </div>
+                          <!-- PROGRESS PART -->
+                          <div class="row p-2 mt-3">
+                            <div class="col-12">
+                              <div class="progress-group">
+                                <span class="prog-text">Total Classes</span>
+                                <span class="float-right tot-value">50<span class="tot-percent">/70</span></span>
+                                <div class="progress progress-sm progress-height">
+                                  <div class="progress-bar progress1 rounded" style="width: 71%">
+                                  </div>
+                                </div>
+                              </div>
+                              <!-- /.progress-group -->
+
+                              <div class="progress-group">
+                                <span class="prog-text">Average Attendance</span>
+                                <span class="float-right tot-value">35<span class="tot-percent">/70</span></span>
+                                <div class="progress progress-sm progress-height">
+                                  <div class="progress-bar progress2 rounded" style="width: 50%">
+                                  </div>
+                                </div>
+                              </div>
+
+                              <!-- /.progress-group -->
+                              <div class="progress-group">
+                                <span class="prog-text">Average Participation</span>
+                                <span class="float-right tot-value">75<span class="tot-percent">/100</span></span>
+                                <div class="progress progress-sm progress-height">
+                                  <div class="progress-bar progress3 rounded" style="width: 75%">
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- attendance right part -->
+                        <div class="col-4">
+                          <!-- DONUT CHART START-->
+                          <canvas id="donutChart"
+                            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                          <!-- DONUT CHART END-->
+                        </div>
+                      </div>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+              </div>
+              <!-- attendance full div end -->
+            </div>
+
+            <!-- right side content -->
+            <div class="col-sm-12 col-md-12 col-lg-4">
+
+              <!-- Info boxes -->
+              <div class="row p-2">
+                <div class="col-12 mb-2">
+                  <div class="info-box">
+                    <div class="info-box-content calender-thumbnail">
+                      <img src="img/calender.png" class="calender-img mr-5" alt="">
+                      <p class="info-box-text calender-text">Academic Calendar</p>
+
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12 mb-2">
+                  <div class="info-box">
+                    <div class="info-box-content">
+                      <span class="info-box-text"><span class="text-live">Live</span> Class
+                        Schedule</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+
+                <div class="col-12 mb-2">
+                  <div class="info-box red-border">
+                    <div class="info-box-content">
+                      <span class="info-box-text">Current <span class="text-live">Live</span>
+                        Class</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12 mb-2">
+                  <div class="info-box">
+                    <div class="info-box-content">
+                      <span class="info-box-text">Upcomming Events</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                  </div>
+                  <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+
+            </div>
+
+
+            <div id="flip">Chat Online (10)</div>
+            <div id="panel">
+              <div id="chat-sidebar">
+                <div id="sidebar-user-box" class="100">
+                  <img class="chat-img" src="dist/img/avatar.png" />
+                  <span id="slider-username">Sumit Kumar Pradhan </span>
+                </div>
+
+                <div id="sidebar-user-box" class="101">
+                  <img class="chat-img" src="dist/img/avatar2.png" />
+                  <span id="slider-username">Skptricks </span>
+                </div>
+
+                <div id="sidebar-user-box" class="102">
+                  <img class="chat-img" src="dist/img/avatar3.png" />
+                  <span id="slider-username">Sumit Kumar Pradhan </span>
+                </div>
+
+                <div id="sidebar-user-box" class="103">
+                  <img class="chat-img" src="dist/img/avatar5.png" />
+                  <span id="slider-username">Skptricks </span>
+                </div>
+
+                <div id="sidebar-user-box" class="104">
+                  <img class="chat-img" src="dist/img/user1-128x128.jpg" />
+                  <span id="slider-username">Sumit Kumar Pradhan </span>
+                </div>
+
+                <div id="sidebar-user-box" class="105">
+                  <img class="chat-img" src="dist/img/user7-128x128.jpg" />
+                  <span id="slider-username">Skptricks </span>
+                </div>
+                <div id="sidebar-user-box" class="106">
+                  <img class="chat-img" src="dist/img/user3-128x128.jpg" />
+                  <span id="slider-username">Skptricks </span>
+                </div>
+                <div id="sidebar-user-box" class="107">
+                  <img class="chat-img" src="dist/img/user4-128x128.jpg" />
+                  <span id="slider-username">Skptricks </span>
+                </div>
+                <div id="sidebar-user-box" class="108">
+                  <img class="chat-img" src="dist/img/user5-128x128.jpg" />
+                  <span id="slider-username">Skptricks </span>
+                </div>
+                <div id="sidebar-user-box" class="109">
+                  <img class="chat-img" src="dist/img/user6-128x128.jpg" />
+                  <span id="slider-username">Skptricks </span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- Content End -->
+
+        </div>
+      </div>
+    </div>
+    <!-- PAGE CONTENT END -->
+
+
+
+
+
+  </div>
+  <!-- REQUIRED SCRIPTS -->
+  <!-- jQuery -->
+  <script src="plugins/jquery/jquery.min.js"></script>
+  <!-- Bootstrap 4 -->
+  <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- AdminLTE App -->
+  <script src="dist/js/adminlte.min.js"></script>
+  <!-- CUSTOM JS SCRIPT ADDED -->
+  <script src="js/index.js"></script>
+
+
+  <!-- ChartJS -->
+  <script src="plugins/chart.js/Chart.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#flip").click(function () {
+        $("#panel").slideToggle("slow");
+      });
+    });
+  </script>
+
+  <script>
+    $(function () {
+
+
+
+
+      var ctx = document.getElementById("donutChart").getContext("2d");
+
+      /*** Make your Gradient ***/
+      var gradient_red = ctx.createLinearGradient(0, 0, 0, 170);
+      gradient_red.addColorStop(0, '#ff2260');
+      gradient_red.addColorStop(1, '#ff736b');
+
+      var gradient_blue = ctx.createLinearGradient(100, 150, 200, 120);
+      gradient_blue.addColorStop(0, '#5046FE');
+      gradient_blue.addColorStop(1, '#03EAFF');
+
+      var gradient_violet = ctx.createLinearGradient(0, 0, 170, 0);
+      gradient_violet.addColorStop(0, '#553eff');
+      gradient_violet.addColorStop(1, '#00f0ff');
+
+      /***************/
+
+      //-------------
+      //- DONUT CHART -
+      //-------------
+      // Get context with jQuery - using jQuery's .get() method.
+      var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+      var donutData = {
+        labels: [
+          'Average Attendance',
+          'Average Participation',
+          'Total Classes',
+        ],
+        datasets: [
+          {
+            data: [25, 25, 25],
+            backgroundColor: [gradient_red, gradient_violet, gradient_blue]
+          }
+        ]
+      }
+      var donutOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+      }
+      //Create pie or douhnut chart
+      // You can switch between pie and douhnut using the method below.
+      var donutChart = new Chart(donutChartCanvas, {
+        type: 'doughnut',
+        data: donutData,
+        options: donutOptions
+      })
+    });
+  </script>
+
+
+  <script>
+    $(document).ready(function () {
+
+      var arr = []; // List of users 
+
+
+      $(document).on('click', '.flip', function () {
+        $('.panel').slideToggle('slow');
+        return false;
+      });
+
+
+
+      $(document).on('click', '.msg_head', function () {
+        var chatbox = $(this).parents().attr("rel");
+        $('[rel="' + chatbox + '"] .msg_wrap').slideToggle('slow');
+        return false;
+      });
+
+
+      $(document).on('click', '.close', function () {
+        var chatbox = $(this).parents().parents().parents().attr("rel");
+        $('[rel="' + chatbox + '"]').hide();
+        arr.splice($.inArray(chatbox, arr), 1);
+        displayChatBox();
+        return false;
+      });
+
+      $(document).on('click', '#sidebar-user-box', function () {
+
+        var userID = $(this).attr("class");
+        var username = $(this).children().text();
+
+        if ($.inArray(userID, arr) != -1) {
+          arr.splice($.inArray(userID, arr), 1);
+        }
+
+        arr.unshift(userID);
+        chatPopup = '<div class="msg_box" style="right:270px" rel="' + userID + '">' +
+          '<div class="msg_head">' + username.split(' ')[0] +
+          '<div class="float-right"><i class="fas fa-phone-square-alt pr-2 pl-2"></i>' +
+          '<i class="fas fa-video pr-2 pl-2"></i>' +
+          '<i class="fas fa-times close text-light"></i> </div></div>' +
+          '<div class="msg_wrap"> <div class="msg_body"> <div class="msg_push"></div> </div>' +
+          '<div class="msg_footer"><textarea class="msg_input" rows="4"></textarea></div>  </div>  </div>';
+
+        $("body").append(chatPopup);
+        displayChatBox();
+      });
+
+      $(document).on('keypress', 'textarea', function (e) {
+        if (e.keyCode == 13) {
+          var msg = $(this).val();
+          $(this).val('');
+          if (msg.trim().length != 0) {
+            var chatbox = $(this).parents().parents().parents().attr("rel");
+            $('<div class="msg-right">' + msg + '</div>').insertBefore('[rel="' + chatbox + '"] .msg_push');
+            $('.msg_body').scrollTop($('.msg_body')[0].scrollHeight);
+          }
+        }
+      });
+
+
+
+      function displayChatBox() {
+        i = 270; // start position
+        j = 260;  //next position
+
+        $.each(arr, function (index, value) {
+          if (index < 4) {
+            $('[rel="' + value + '"]').css("right", i);
+            $('[rel="' + value + '"]').show();
+            i = i + j;
+          }
+          else {
+            $('[rel="' + value + '"]').hide();
+          }
+        });
+      }
+
+    });
+  </script>
+
+
+</body>
+
+</html>
