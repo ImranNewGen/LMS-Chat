@@ -490,6 +490,8 @@
                     } : obj);
 
                     setCurrentChattingUsersList(clistTemp);
+                    const myDiv = document.getElementById("msgBodyId");
+                    myDiv.scrollTop = myDiv.scrollHeight;
                 }
             };
 
@@ -523,7 +525,7 @@
                             </div>
                         </div>
                         <div className="msg_wrap">
-                            <div className="msg_body">
+                            <div className="msg_body" id="msgBodyId">
                                 {cu.messages.map(msg =>
                                     <div className={msg.sender === me.username ? 'msg-me' : 'msg-right'}>{msg.message}</div>
                                 )}
@@ -557,7 +559,3 @@
 </body>
 
 </html>
-<!--
-
-
--->
