@@ -360,19 +360,20 @@
             const [currentChattingUsersList, setCurrentChattingUsersList] = React.useState([]);
             const [messageList, setMessageList] = React.useState([]);
             const [me, setMe] = React.useState([]);
+            const CHAT_BOX_OFFSET = 260;
 
             React.useEffect(() => {
                 console.log('Init');
 
                 setMessageList([
-                    {sender: 'Sumit100@gmail.com', receiver: 'admin@123', message: 'hi', time: 10},
+                    /*{sender: 'Sumit100@gmail.com', receiver: 'admin@123', message: 'hi', time: 10},
                     {sender: 'admin@123', receiver: 'Sumit100@gmail.com', message: 'hi, vai', time: 11},
                     {sender: 'Sumit100@gmail.com', receiver: 'admin@123', message: 'kia hal', time: 14},
                     {sender: 'admin@123', receiver: 'Sumit100@gmail.com', message: 'Badiya', time: 16},
 
                     {sender: 'admin@123', receiver: 'Kamal101@gmail.com', message: 'Eid kob hay?', time: 12},
                     {sender: 'Kamal101@gmail.com', receiver: 'admin@123', message: 'Sanichar ko', time: 13},
-                    {sender: 'admin@123', receiver: 'Kamal101@gmail.com', message: 'Sukriya', time: 15}
+                    {sender: 'admin@123', receiver: 'Kamal101@gmail.com', message: 'Sukriya', time: 15}*/
                 ]);
 
                 setUserList([
@@ -447,22 +448,18 @@
                 }
 
                 let userTemp = [...currentChattingUsersList, {
-                    id: user.id,
-                    username: user.username,
-                    fullName: user.fullName,
-                    image: user.image,
+                    ...user,
                     time: moment().format("x"),
                     typingMessage: ''
                 }];
+
                 userTemp = [...userTemp].sort((a, b) => (a.time < b.time) ? 1 : -1).slice(0, 3);
 
                 let i = 0;
-
                 userTemp = userTemp.map(us => {
-                    i += 260;
+                    i += CHAT_BOX_OFFSET;
                     let message = messageList.filter(f => f.sender === us.username || f.receiver === us.username)
                         .sort((a, b) => (a.time > b.time) ? 1 : -1);
-
                     return {...us, right: i, messages: message};
                 });
 
@@ -484,7 +481,6 @@
                     };
                     setMessageList([...messageList, newMessage]);
 
-
                     let clistTemp = currentChattingUsersList.map(obj => obj.username === username ? {
                         ...obj, messages: [...obj.messages, newMessage], typingMessage: ''
                     } : obj);
@@ -498,6 +494,61 @@
             const setTypingValue = (e, username) => {
                 let clistTemp = currentChattingUsersList.map(obj => obj.username === username ? {...obj, typingMessage: e.target.value} : obj);
                 setCurrentChattingUsersList(clistTemp);
+            };
+
+            function inboundTextMessageUtil(sender, message) {
+                const senderObj = userList.find(us => us.username === sender);
+                if (senderObj === undefined) {
+                    console.info('No Sender Found', sender);
+                    return false;
+                }
+
+                const newMessage = {
+                    sender: sender,
+                    receiver: me.username,
+                    message: message,
+                    time: moment().format("x")
+                };
+                setMessageList([...messageList, newMessage]);
+
+                const senderExists = currentChattingUsersList.some(user => user.username === sender);
+                if (senderExists) {
+                    let clistTemp = currentChattingUsersList.map(obj => obj.username === sender ? {
+                        ...obj, messages: [...obj.messages, newMessage], typingMessage: ''
+                    } : obj);
+
+                    setCurrentChattingUsersList(clistTemp);
+                    const myDiv = document.getElementById("msgBodyId");
+                    myDiv.scrollTop = myDiv.scrollHeight;
+                } else {
+                    let userTemp = [...currentChattingUsersList, {
+                        ...senderObj,
+                        time: moment().format("x"),
+                        typingMessage: ''
+                    }];
+                    userTemp = [...userTemp].sort((a, b) => (a.time < b.time) ? 1 : -1).slice(0, 3);
+
+                    let i = 0;
+                    userTemp = userTemp.map(us => {
+                        i += CHAT_BOX_OFFSET;
+                        let message = messageList.filter(f => f.sender === us.username || f.receiver === us.username)
+                            .sort((a, b) => (a.time > b.time) ? 1 : -1);
+                        return {...us, right: i, messages: message};
+                    });
+
+                    userTemp = userTemp.map(obj => obj.username === sender ? {
+                        ...obj, messages: [...obj.messages, newMessage], typingMessage: ''
+                    } : obj);
+
+                    setCurrentChattingUsersList(userTemp);
+                }
+            }
+
+            const simulate = () => {
+                const message = document.getElementById("messageId").value;
+                const sender = document.getElementById("senderId").value;
+
+                inboundTextMessageUtil(sender, message);
             };
 
             return <div>
@@ -521,31 +572,42 @@
                                 <i className="fas fa-phone-square-alt pr-2 pl-2"
                                    onClick={() => alert('Audio' + cu.username)}/>
                                 <i className="fas fa-video pr-2 pl-2" onClick={() => alert('video' + cu.username)}/>
-                                <i className="fas fa-times close text-light" onClick={() => removeChatBox(cu.username)}/>
+                                <i className="fas fa-times close text-light"
+                                   onClick={() => removeChatBox(cu.username)}/>
                             </div>
                         </div>
                         <div className="msg_wrap">
                             <div className="msg_body" id="msgBodyId">
                                 {cu.messages.map(msg =>
-                                    <div className={msg.sender === me.username ? 'msg-me' : 'msg-right'}>{msg.message}</div>
+                                    <div
+                                        className={msg.sender === me.username ? 'msg-me' : 'msg-right'}>{msg.message}</div>
                                 )}
                             </div>
                             <div className="msg_footer">
                                 <input type="text" value={cu.typingMessage} className="msg_input"
-                                          onChange={(e) => setTypingValue(e, cu.username)}
-                                          onKeyPress={(e) => sendMessageEnter(e, cu.username)}/>
+                                       onChange={(e) => setTypingValue(e, cu.username)}
+                                       onKeyPress={(e) => sendMessageEnter(e, cu.username)}/>
                             </div>
                         </div>
                     </div>
                 )}
 
                 <button onClick={() => {
-                    console.table("-----------------------");
-                    console.table(currentChattingUsersList);
+                    console.table("--------Current Chatting Users List---------------");
+                    // console.table(currentChattingUsersList);
                     // console.table("-----------------------");
-                    // console.table(messageList);
-                }}>Clear
+                    console.table(messageList);
+                }}>Current Chatting Users List
                 </button>
+
+                <br/>
+                Message:<input type="text" id="messageId"/><br/>
+                Sender:<input type="text" id="senderId"/><br/>
+                <button onClick={() => simulate()}>Send</button>
+                <br/>
+                {userList.map((user, i) => (
+                    <p>{user.id}=>{user.fullName}::{user.username}</p>
+                ))}
 
             </div>;
 
