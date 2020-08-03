@@ -303,7 +303,7 @@
                     return false;
                 }
 
-                if (e.key=== 'Enter') {
+                if (e.key === 'Enter') {
                     const newMessage = {
                         sender: me.username,
                         receiver: username,
@@ -312,11 +312,11 @@
                     };
                     setMessageList([...messageList, newMessage]);
 
-                    let clistTemp = currentChattingUsersList.map(obj => obj.username === username ? {
+                    let cListTemp = currentChattingUsersList.map(obj => obj.username === username ? {
                         ...obj, messages: [...obj.messages, newMessage], typingMessage: ''
                     } : obj);
 
-                    setCurrentChattingUsersList(clistTemp);
+                    setCurrentChattingUsersList(cListTemp);
                     const myDiv = document.getElementById("msgBodyId");
                     myDiv.scrollTop = myDiv.scrollHeight;
                     /* save newMessage object into DB */
@@ -324,8 +324,11 @@
             };
 
             const setTypingValue = (e, username) => {
-                let clistTemp = currentChattingUsersList.map(obj => obj.username === username ? {...obj, typingMessage: e.target.value} : obj);
-                setCurrentChattingUsersList(clistTemp);
+                let cListTemp = currentChattingUsersList.map(obj => obj.username === username ? {
+                    ...obj,
+                    typingMessage: e.target.value
+                } : obj);
+                setCurrentChattingUsersList(cListTemp);
             };
 
             function inboundTextMessageUtil(sender, message) {
@@ -345,11 +348,11 @@
 
                 const senderExists = currentChattingUsersList.some(user => user.username === sender);
                 if (senderExists) {
-                    let clistTemp = currentChattingUsersList.map(obj => obj.username === sender ? {
+                    let cListTemp = currentChattingUsersList.map(obj => obj.username === sender ? {
                         ...obj, messages: [...obj.messages, newMessage], typingMessage: ''
                     } : obj);
 
-                    setCurrentChattingUsersList(clistTemp);
+                    setCurrentChattingUsersList(cListTemp);
                     const myDiv = document.getElementById("msgBodyId");
                     myDiv.scrollTop = myDiv.scrollHeight;
                 } else {
@@ -382,6 +385,17 @@
 
                 inboundTextMessageUtil(sender, message);
             };
+
+            const truncatedText = function (str) {
+                let length = 16;
+                let ending = '...';
+                if (str.length > length) {
+                    return str.substring(0, length - ending.length) + ending;
+                } else {
+                    return str;
+                }
+            };
+
 
             return <div>
                 <div id="flip" onClick={panelELToggle}>Chat Online ({userList.length})</div>
