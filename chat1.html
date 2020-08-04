@@ -194,7 +194,7 @@
     <script src="RTCMultiConnection.js"></script>
 
     <script type="text/babel">
-        const name = prompt("Enter Name");
+        const name = encodeURIComponent(prompt("Enter Name"));
 
         const connection = new RTCMultiConnection();
         // connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
@@ -231,7 +231,7 @@
                     let user = connection.peers[participantId];
                     let id = user.userid;
                     let username = user.extra.username;
-                    let fullName = truncatedText(user.extra.fullName);
+                    let fullName = user.extra.fullName;
                     let image = user.extra.image;
                     return {id, username, fullName, image};
                 });
@@ -388,7 +388,7 @@
                         {userList.map((user, i) => (
                             <div key={i} className="sidebar-user-box" onClick={() => selectChatUser(user)}>
                                 <img src={user.image}/>
-                                <span className="slider-username">{user.fullName}</span>
+                                <span className="slider-username">{truncatedText(decodeURIComponent(user.fullName))}</span>
                             </div>
                         ))}
                     </div>
@@ -397,7 +397,7 @@
                 {currentChattingUsersList.map((cu, i) =>
                     <div key={i} className="msg_box" style={{right: cu.right + 'px'}}>
                         <div className="msg_head">
-                            {cu.fullName}
+                            {truncatedText(decodeURIComponent(cu.fullName))}
                             <div className="float-right">
                                 <i className="fas fa-phone-square-alt pr-2 pl-2"
                                    onClick={() => alert('Audio: ' + cu.username + '#' + cu.id)}/>
@@ -423,6 +423,8 @@
                     </div>
                 )}
                 <p>{JSON.stringify(me)}</p>
+
+
             </div>;
 
         };
