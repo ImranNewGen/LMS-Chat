@@ -214,15 +214,27 @@
             const panelEL = React.useRef(null);
             const [me, setMe] = React.useState([]);
             const CHAT_BOX_OFFSET = 260;
+            const AUDIO = 'AUDIO';
+            const VIDEO = 'VIDEO';
+            const TEXT = 'TEXT';
 
             const [userList, setUserList] = React.useState([]);
             const [messageList, setMessageList] = React.useState([]);
             const [currentChattingUsersList, setCurrentChattingUsersList] = React.useState([]);
 
             connection.onmessage = event => {
-                const message = event.data;
+                const payload = event.data;
                 const sender = event.extra.username;
-                inboundTextMessageUtil(sender, message);
+
+                if (payload.type === TEXT) {
+                    inboundTextMessageUtil(sender, payload.body);
+                }else if (payload.type === VIDEO) {
+                    inboundVideoMessageUtil(sender, payload, event);
+                }else if (payload.type === AUDIO) {
+                    console.log(AUDIO)
+                } else {
+                    alert('Error');
+                }
             };
 
             connection.onUserStatusChanged = function (event) {
@@ -236,7 +248,6 @@
                 });
                 setUserList(users);
             };
-
 
             React.useEffect(() => {
                 /*read from db, From Message m where m.sender=:me.username or m.receiver=:me.username*/
@@ -309,7 +320,7 @@
                         console.info('No Receiver Found or he/she is in offline', newMessage.receiver);
                         return false;
                     }
-                    connection.send(newMessage.message, receiverObj.id);
+                    connection.send({type:TEXT, body: newMessage.message}, receiverObj.id);
                 }
             };
 
@@ -369,6 +380,17 @@
                 }
             }
 
+            const inboundVideoMessageUtil = (sender, payload, event) => {
+                const r = confirm(sender + ' is calling you, want to receive?');
+                if (r === true) {
+                    window.open("https://lms-video.vercel.app/?room=" + payload.body,
+                        "_blank",
+                        "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=900,height=600");
+                } else {
+                    connection.send({type:TEXT, body: 'Call Rejected'}, event.userid);
+                }
+            };
+
             const truncatedText = function (str) {
                 let length = 16;
                 let ending = '...';
@@ -379,6 +401,27 @@
                 }
             };
 
+            function createRoom() {
+                let length = 15;
+                let result = '';
+                let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                let charactersLength = characters.length;
+
+                for (let i = 0; i < length; i++ ) {
+                    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+                }
+                return result;
+            }
+
+            const videoCall = (cu) => {
+                const room = createRoom();
+                window.open("https://lms-video.vercel.app/?room=" + room,
+                    "_blank",
+                    "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=900,height=600");
+                console.log('video: ' + cu.username + '=>' + cu.id);
+                connection.send({type: VIDEO, body: room}, cu.id);
+            };
+
 
             return <div>
                 <div id="flip" onClick={panelELToggle}>Chat Online ({userList.length})</div>
@@ -387,7 +430,8 @@
                         {userList.map((user, i) => (
                             <div key={i} className="sidebar-user-box" onClick={() => selectChatUser(user)}>
                                 <img src={user.image}/>
-                                <span className="slider-username">{truncatedText(decodeURIComponent(user.fullName))}</span>
+                                <span
+                                    className="slider-username">{truncatedText(decodeURIComponent(user.fullName))}</span>
                             </div>
                         ))}
                     </div>
@@ -401,7 +445,7 @@
                                 <i className="fas fa-phone-square-alt pr-2 pl-2"
                                    onClick={() => alert('Audio: ' + cu.username + '#' + cu.id)}/>
                                 <i className="fas fa-video pr-2 pl-2"
-                                   onClick={() => alert('video: ' + cu.username + '#' + cu.id)}/>
+                                   onClick={() => videoCall(cu)}/>
                                 <i className="fas fa-times close text-light"
                                    onClick={() => removeChatBox(cu.username)}/>
                             </div>
@@ -422,7 +466,6 @@
                     </div>
                 )}
                 <p>{JSON.stringify(me)}</p>
-
 
             </div>;
 
