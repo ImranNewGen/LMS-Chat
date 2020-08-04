@@ -83,7 +83,7 @@
         .msg_input {
             width: 100%;
             height: 30px;
-            border: 1px solid white;
+            border: 1px solid #DDDDDD;
             border-top: 1px solid #DDDDDD;
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
@@ -124,6 +124,7 @@
             /*margin-left: 10px;*/
             border-radius: 5px;
             word-break: break-all;
+            font-size: 13px;
         }
         .msg-me {
             background-image: linear-gradient(-90deg, #264bff, #5188cc);
@@ -135,6 +136,7 @@
             /*margin-left: 10px;*/
             border-radius: 5px;
             word-break: break-all;
+            font-size: 13px;
         }
 
         #chat-sidebar {
@@ -185,7 +187,28 @@
     <script src= "https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script src= "https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+    <!--<script src="https://rtcmulticonnection.herokuapp.com/socket.io/socket.io.js"></script>-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="RTCMultiConnection.js"></script>
+
     <script type="text/babel">
+        const name = prompt("Enter Name");
+
+        const connection = new RTCMultiConnection();
+        connection.socketURL = 'https://rtcmulticonnection.herokuapp.com:443/';
+        // connection.socketURL = 'https://young-ridge-01369.herokuapp.com/';
+        connection.enableLogs = false;
+        connection.session = {
+            data: true
+        };
+        connection.extra = {
+            username: name,
+            fullName: name,
+            image: 'dist/img/user8-128x128.jpg'
+        };
+
 
         const Main = () => {
 
@@ -197,70 +220,32 @@
             const [messageList, setMessageList] = React.useState([]);
             const [currentChattingUsersList, setCurrentChattingUsersList] = React.useState([]);
 
-            React.useEffect(() => {
-                console.log('Init');
+            connection.onmessage = event => {
+                const message = event.data;
+                const sender = event.extra.username;
+                inboundTextMessageUtil(sender, message);
+            };
 
+            connection.onUserStatusChanged = function (event) {
+                let users = connection.getAllParticipants().map(participantId => {
+                    let user = connection.peers[participantId];
+                    let id = user.userid;
+                    let username = user.extra.username;
+                    let fullName = truncatedText(user.extra.fullName);
+                    let image = user.extra.image;
+                    return {id, username, fullName, image};
+                });
+                setUserList(users);
+            };
+
+
+            React.useEffect(() => {
                 /*read from db, From Message m where m.sender=:me.username or m.receiver=:me.username*/
                 setMessageList([]);
 
-                setUserList([
-                    {
-                        id: 100,
-                        username: 'Sumit100@gmail.com',
-                        fullName: 'Sumit 100',
-                        image: 'dist/img/avatar.png'
-                    },
-                    {
-                        id: 101,
-                        username: 'Kamal101@gmail.com',
-                        fullName: 'Kamal 101',
-                        image: 'dist/img/avatar2.png'
-                    },
-                    {
-                        id: 102,
-                        username: 'Jamal102@gmail.com',
-                        fullName: 'Jamal 102',
-                        image: 'dist/img/avatar3.png'
-                    },
-                    {
-                        id: 103,
-                        username: 'Iqbal103@gmail.com',
-                        fullName: 'Iqbal 103',
-                        image: 'dist/img/avatar5.png'
-                    },
-                    {
-                        id: 104,
-                        username: 'Sadab104@gmail.com',
-                        fullName: 'Sadab 104',
-                        image: 'dist/img/user1-128x128.jpg'
-                    },
-                    {
-                        id: 105,
-                        username: 'Kalim105@gmail.com',
-                        fullName: 'Kalim 105',
-                        image: 'dist/img/user2-160x160.jpg'
-                    },
-                    {
-                        id: 106,
-                        username: 'Sugan106@gmail.com',
-                        fullName: 'Sugan 106',
-                        image: 'dist/img/user6-128x128.jpg'
-                    },
-                    {
-                        id: 107,
-                        username: 'Malam107@gmail.com',
-                        fullName: 'Malam 107',
-                        image: 'dist/img/user8-128x128.jpg'
-                    }
-                ]);
-
-                setMe({
-                    id: 1,
-                    username: 'admin@123',
-                    fullName: 'Mr. Admin',
-                    image: 'dist/img/user8-128x128.jpg'
+                connection.openOrJoin("BABYLON_NTL_BRL", (isRoomCreated, roomid, error) => {
+                    setMe({...connection.extra, id: connection.userid});
                 });
-
 
             }, []);
 
@@ -320,6 +305,12 @@
                     const myDiv = document.getElementById("msgBodyId");
                     myDiv.scrollTop = myDiv.scrollHeight;
                     /* save newMessage object into DB */
+                    const receiverObj = userList.find(us => us.username === newMessage.receiver);
+                    if (receiverObj === undefined) {
+                        console.info('No Receiver Found or he/she is in offline', newMessage.receiver);
+                        return false;
+                    }
+                    connection.send(newMessage.message, receiverObj.id);
                 }
             };
 
@@ -416,8 +407,9 @@
                             {cu.fullName}
                             <div className="float-right">
                                 <i className="fas fa-phone-square-alt pr-2 pl-2"
-                                   onClick={() => alert('Audio' + cu.username)}/>
-                                <i className="fas fa-video pr-2 pl-2" onClick={() => alert('video' + cu.username)}/>
+                                   onClick={() => alert('Audio: ' + cu.username + '#' + cu.id)}/>
+                                <i className="fas fa-video pr-2 pl-2"
+                                   onClick={() => alert('video: ' + cu.username + '#' + cu.id)}/>
                                 <i className="fas fa-times close text-light"
                                    onClick={() => removeChatBox(cu.username)}/>
                             </div>
@@ -437,26 +429,8 @@
                         </div>
                     </div>
                 )}
-
-                <button onClick={() => {
-                    // console.table("--------Current Chatting Users List---------------");
-                    // console.table(currentChattingUsersList);
-                    // console.table("-----------------------");
-                    // console.table(messageList);
-                }}>Current Chatting Users List
-                </button>
-
-                <br/>
-                Message:<input type="text" id="messageId"/><br/>
-                Sender:<input type="text" id="senderId"/><br/>
-                <button onClick={() => simulate()}>Send</button>
-                <br/>
-                {userList.map((user, i) => (
-                    <p>{user.id}=>{user.fullName}::{user.username}</p>
-                ))}
-
+                <p>{JSON.stringify(me)}</p>
             </div>;
-
 
         };
 
@@ -467,3 +441,28 @@
 </body>
 
 </html>
+
+<!--
+                /*setMe({
+                    id: 1,
+                    username: 'admin@123',
+                    fullName: 'Mr. Admin',
+                    image: 'dist/img/user8-128x128.jpg'
+                 });*/
+
+<br/>
+                <p>Current Chatting Users List</p>
+                {currentChattingUsersList.map((user, i) => (
+                    <p>{user.id}=>{user.username}</p>
+                ))}
+
+                Message:<input type="text" id="messageId"/><br/>
+                Sender:<input type="text" id="senderId"/><br/>
+                <button onClick={() => simulate()}>Send</button>
+                <br/>
+                <p>Users List</p>
+                {userList.map((user, i) => (
+                    <p>{user.id}=>{user.fullName}::{user.username}</p>
+                ))}
+                <button onClick={() => console.log(userList)}>User</button>
+-->
