@@ -1,0 +1,23 @@
+
+                /*setMe({
+                    id: 1,
+                    username: 'admin@123',
+                    fullName: 'Mr. Admin',
+                    image: 'dist/img/user8-128x128.jpg'
+                 });*/
+
+<br/>
+                <p>Current Chatting Users List</p>
+                {currentChattingUsersList.map((user, i) => (
+                    <p>{user.id}=>{user.username}</p>
+                ))}
+
+                Message:<input type="text" id="messageId"/><br/>
+                Sender:<input type="text" id="senderId"/><br/>
+                <button onClick={() => simulate()}>Send</button>
+                <br/>
+                <p>Users List</p>
+                {userList.map((user, i) => (
+                    <p>{user.id}=>{user.fullName}::{user.username}</p>
+                ))}
+                <button onClick={() => console.log(userList)}>User</button>

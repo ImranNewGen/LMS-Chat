@@ -15,7 +15,7 @@
             href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap"
             rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
+    <title>LMS</title>
 
     <style>
         #flip {
@@ -370,13 +370,6 @@
                 }
             }
 
-            const simulate = () => {
-                const message = document.getElementById("messageId").value;
-                const sender = document.getElementById("senderId").value;
-
-                inboundTextMessageUtil(sender, message);
-            };
-
             const truncatedText = function (str) {
                 let length = 16;
                 let ending = '...';
@@ -439,30 +432,4 @@
     </script>
 
 </body>
-
 </html>
-
-<!--
-                /*setMe({
-                    id: 1,
-                    username: 'admin@123',
-                    fullName: 'Mr. Admin',
-                    image: 'dist/img/user8-128x128.jpg'
-                 });*/
-
-<br/>
-                <p>Current Chatting Users List</p>
-                {currentChattingUsersList.map((user, i) => (
-                    <p>{user.id}=>{user.username}</p>
-                ))}
-
-                Message:<input type="text" id="messageId"/><br/>
-                Sender:<input type="text" id="senderId"/><br/>
-                <button onClick={() => simulate()}>Send</button>
-                <br/>
-                <p>Users List</p>
-                {userList.map((user, i) => (
-                    <p>{user.id}=>{user.fullName}::{user.username}</p>
-                ))}
-                <button onClick={() => console.log(userList)}>User</button>
--->
