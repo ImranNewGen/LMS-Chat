@@ -250,7 +250,7 @@
             };
 
             connection.onclose = function(event) {
-                alert('data connection closed between you and ' + event.userid);
+                removeChatBox(event.extra.fullName);
             };
 
             React.useEffect(() => {
