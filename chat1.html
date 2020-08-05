@@ -249,6 +249,10 @@
                 setUserList(users);
             };
 
+            connection.onclose = function(event) {
+                alert('data connection closed between you and ' + event.userid);
+            };
+
             React.useEffect(() => {
                 /*read from db, From Message m where m.sender=:me.username or m.receiver=:me.username*/
                 setMessageList([]);
@@ -381,6 +385,7 @@
             }
 
             const inboundVideoMessageUtil = (sender, payload, event) => {
+                document.getElementsByClassName("audio-element")[0].play();
                 const r = confirm(sender + ' is calling you, want to receive?');
                 if (r === true) {
                     window.open("https://lms-video.vercel.app/?room=" + payload.body,
@@ -389,6 +394,7 @@
                 } else {
                     connection.send({type:TEXT, body: 'Call Rejected'}, event.userid);
                 }
+                document.getElementsByClassName("audio-element")[0].pause();
             };
 
             const truncatedText = function (str) {
@@ -466,6 +472,10 @@
                     </div>
                 )}
                 <p>{JSON.stringify(me)}</p>
+
+                <audio className="audio-element" loop>
+                    <source src="nokia.mp3"/>
+                </audio>
 
             </div>;
 
