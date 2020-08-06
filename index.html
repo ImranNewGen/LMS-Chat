@@ -946,7 +946,8 @@
                   confirmButtonColor: '#007bff',
                   cancelButtonColor: '#dc3545',
                   confirmButtonText: 'Receive',
-                  cancelButtonText: 'Reject'
+                  cancelButtonText: 'Reject',
+                  allowOutsideClick: false,
               }).then((result) => {
                   document.getElementsByClassName("audio-element")[0].pause();
                   if (result.value) {
