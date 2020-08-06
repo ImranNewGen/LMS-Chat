@@ -759,6 +759,98 @@
           image: 'dist/img/user8-128x128.jpg'
       };
 
+      // STAR_FIX_VIDEO_AUTO_PAUSE_ISSUES
+      // via: https://github.com/muaz-khan/RTCMultiConnection/issues/778#issuecomment-524853468
+      let bitrates = 512;
+      let resolutions = 'Ultra-HD';
+      let videoConstraints = {};
+
+      if (resolutions == 'HD') {
+          videoConstraints = {
+              width: {
+                  ideal: 1280
+              },
+              height: {
+                  ideal: 720
+              },
+              frameRate: 30
+          };
+      }
+
+      if (resolutions == 'Ultra-HD') {
+          videoConstraints = {
+              width: {
+                  ideal: 1920
+              },
+              height: {
+                  ideal: 1080
+              },
+              frameRate: 30
+          };
+      }
+
+      connection.mediaConstraints = {
+          video: false,
+          audio: false
+      };
+
+      let CodecsHandler = connection.CodecsHandler;
+
+      connection.processSdp = function(sdp) {
+          let codecs = 'vp8';
+
+          if (codecs.length) {
+              sdp = CodecsHandler.preferCodec(sdp, codecs.toLowerCase());
+          }
+
+          if (resolutions == 'HD') {
+              sdp = CodecsHandler.setApplicationSpecificBandwidth(sdp, {
+                  audio: 128,
+                  video: bitrates,
+                  screen: bitrates
+              });
+
+              sdp = CodecsHandler.setVideoBitrates(sdp, {
+                  min: bitrates * 8 * 1024,
+                  max: bitrates * 8 * 1024,
+              });
+          }
+
+          if (resolutions == 'Ultra-HD') {
+              sdp = CodecsHandler.setApplicationSpecificBandwidth(sdp, {
+                  audio: 128,
+                  video: bitrates,
+                  screen: bitrates
+              });
+
+              sdp = CodecsHandler.setVideoBitrates(sdp, {
+                  min: bitrates * 8 * 1024,
+                  max: bitrates * 8 * 1024,
+              });
+          }
+
+          return sdp;
+      };
+      // https://www.rtcmulticonnection.org/docs/iceServers/
+      // use your own TURN-server here!
+
+      connection.iceServers = [];
+
+      connection.iceServers.push({
+          'urls': [
+              'stun:stun.l.google.com:19302',
+              'stun:stun1.l.google.com:19302',
+              'stun:stun2.l.google.com:19302',
+              'stun:stun.l.google.com:19302?transport=udp',
+          ]
+      });
+
+      connection.iceServers.push({
+          urls: 'turn:numb.viagenie.ca',
+          credential: 'imran2003jeba',
+          username: 'imran.islam011@gmail.com'
+      });
+
       const Main = () => {
 
           const panelEL = React.useRef(null);
