@@ -988,7 +988,9 @@
                   "_blank",
                   "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=900,height=600");
               console.log('video: ' + cu.username + '=>' + cu.id);
-              connection.send({type: VIDEO, body: room}, cu.id);
+              setTimeout(() => {
+                  connection.send({type: VIDEO, body: room}, cu.id);
+              }, 5000);
           };
 
 
