@@ -936,26 +936,19 @@
           }
 
           const inboundVideoMessageUtil = (sender, payload, event) => {
-              /*document.getElementsByClassName("audio-element")[0].play();
-              const r = confirm(sender + ' is calling you, want to receive?');
-              if (r === true) {
-                  window.open("https://lms-video.vercel.app/?room=" + payload.body,
-                      "_blank",
-                      "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=900,height=600");
-              } else {
-                  connection.send({type:TEXT, body: 'Call Rejected'}, event.userid);
-              }
-              document.getElementsByClassName("audio-element")[0].pause();*/
+              document.getElementsByClassName("audio-element")[0].play();
+              let caller = sender + " is Calling...";
               Swal.fire({
-                  title: "Calling",
+                  title: caller,
                   text: "Dou you want to receive this call?",
                   icon: 'question',
                   showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
+                  confirmButtonColor: '#007bff',
+                  cancelButtonColor: '#dc3545',
                   confirmButtonText: 'Receive',
                   cancelButtonText: 'Reject'
               }).then((result) => {
+                  document.getElementsByClassName("audio-element")[0].pause();
                   if (result.value) {
                       console.log("Accept");
                       window.open("https://lms-video.vercel.app/?room=" + payload.body,
