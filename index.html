@@ -937,7 +937,7 @@
 
           const inboundVideoMessageUtil = (sender, payload, event) => {
               document.getElementsByClassName("audio-element")[0].play();
-              let caller = sender + " is Calling...";
+              let caller = decodeURIComponent(sender) + " is Calling...";
               Swal.fire({
                   title: caller,
                   text: "Dou you want to receive this call?",
