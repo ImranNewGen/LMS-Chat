@@ -871,9 +871,9 @@
               if (payload.type === TEXT) {
                   inboundTextMessageUtil(sender, payload.body);
               }else if (payload.type === VIDEO) {
-                  inboundVideoMessageUtil(sender, payload, event);
+                  inboundVideoMessageUtil(sender, payload, event, false);
               }else if (payload.type === AUDIO) {
-                  console.log(AUDIO)
+                  inboundVideoMessageUtil(sender, payload, event, true);
               } else {
                   alert('Error');
               }
@@ -1027,7 +1027,7 @@
               }
           }
 
-          const inboundVideoMessageUtil = (sender, payload, event) => {
+          const inboundVideoMessageUtil = (sender, payload, event, audio) => {
               document.getElementsByClassName("audio-element")[0].play();
               let caller = decodeURIComponent(sender) + " is Calling...";
               Swal.fire({
@@ -1044,11 +1044,11 @@
                   document.getElementsByClassName("audio-element")[0].pause();
                   if (result.value) {
                       console.log("Accept");
-                      window.open("https://lms-video.vercel.app/?room=" + payload.body,
+                      window.open("https://lms-video.vercel.app/?room=" + payload.body + "&audio=" + audio,
                           "_blank",
                           "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=900,height=600");
                   } else {
-                      connection.send({type:TEXT, body: 'Call Rejected'}, event.userid);
+                      connection.send({type: TEXT, body: 'Call Rejected'}, event.userid);
                   }
               });
           };
@@ -1075,14 +1075,14 @@
               return result;
           }
 
-          const videoCall = (cu) => {
+          const videoCall = (cu, audio) => {
               const room = createRoom();
-              window.open("https://lms-video.vercel.app/?room=" + room,
+              window.open("https://lms-video.vercel.app/?room=" + room + "&audio=" + audio,
                   "_blank",
                   "toolbar=yes,scrollbars=yes,resizable=yes,top=100,left=100,width=900,height=600");
               console.log('video: ' + cu.username + '=>' + cu.id);
               setTimeout(() => {
-                  connection.send({type: VIDEO, body: room}, cu.id);
+                  connection.send({type: audio === true ? AUDIO : VIDEO, body: room}, cu.id);
               }, 5000);
           };
 
@@ -1107,9 +1107,9 @@
                           {truncatedText(decodeURIComponent(cu.fullName))}
                           <div className="float-right">
                               <i className="fas fa-phone-square-alt pr-2 pl-2"
-                                 onClick={() => alert('Audio: ' + cu.username + '#' + cu.id)}/>
+                                 onClick={() => videoCall(cu, true)}/>
                               <i className="fas fa-video pr-2 pl-2"
-                                 onClick={() => videoCall(cu)}/>
+                                 onClick={() => videoCall(cu, false)}/>
                               <i className="fas fa-times close text-light"
                                  onClick={() => removeChatBox(cu.username)}/>
                           </div>
