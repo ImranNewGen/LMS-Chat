@@ -346,12 +346,23 @@
     </script>
     <div id="root"></div>
 
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.2/sockjs.min.js"></script>
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src= "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
     <script src= "https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script src= "https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+    <script src= "https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
     <script type="text/babel">
+        const UNAME = prompt('Enter Name', '');
+
+
+        const CHAT_BOX_OFFSET = 260;
+        const BASE_URL = 'http://localhost:8080/';
+
+        const socket = new SockJS(BASE_URL + "rubaru-websocket");
+        const stompClient = Stomp.over(socket);
 
         const Main = () => {
 
@@ -359,84 +370,161 @@
             const [userList, setUserList] = React.useState([]);
             const [currentChattingUsersList, setCurrentChattingUsersList] = React.useState([]);
             const [messageList, setMessageList] = React.useState([]);
-            const [me, setMe] = React.useState([]);
-            const CHAT_BOX_OFFSET = 260;
+            // const [me, setMe] = React.useState([]);
+
+            /*=======================================*/
+            const me = {
+                id: 1,
+                username: UNAME + '@gmail.com',
+                fullName: UNAME,
+                image: 'dist/img/user8-128x128.jpg'
+            };
+
+
+            const myInstitutes = [
+                {
+                    id: 100,
+                    username: 'Sumit100@gmail.com',
+                    fullName: 'Sumit 100',
+                    image: 'dist/img/avatar.png'
+                },
+                {
+                    id: 101,
+                    username: 'Kamal101@gmail.com',
+                    fullName: 'Kamal 101',
+                    image: 'dist/img/avatar2.png'
+                },
+                {
+                    id: 102,
+                    username: 'Jamal102@gmail.com',
+                    fullName: 'Jamal 102',
+                    image: 'dist/img/avatar3.png'
+                },
+                {
+                    id: 103,
+                    username: 'Iqbal103@gmail.com',
+                    fullName: 'Iqbal 103',
+                    image: 'dist/img/avatar5.png'
+                },
+                {
+                    id: 104,
+                    username: 'Sadab104@gmail.com',
+                    fullName: 'Sadab 104',
+                    image: 'dist/img/user1-128x128.jpg'
+                },
+                {
+                    id: 105,
+                    username: 'Kalim105@gmail.com',
+                    fullName: 'Kalim 105',
+                    image: 'dist/img/user2-160x160.jpg'
+                },
+                {
+                    id: 106,
+                    username: 'Sugan106@gmail.com',
+                    fullName: 'Sugan 106',
+                    image: 'dist/img/user6-128x128.jpg'
+                },
+                {
+                    id: 107,
+                    username: 'Malam107@gmail.com',
+                    fullName: 'Malam 107',
+                    image: 'dist/img/user8-128x128.jpg'
+                }
+            ];
+            /*=======================================*/
+
 
             React.useEffect(() => {
                 console.log('Init');
 
-                setMessageList([
-                    /*{sender: 'Sumit100@gmail.com', receiver: 'admin@123', message: 'hi', time: 10},
-                    {sender: 'admin@123', receiver: 'Sumit100@gmail.com', message: 'hi, vai', time: 11},
-                    {sender: 'Sumit100@gmail.com', receiver: 'admin@123', message: 'kia hal', time: 14},
-                    {sender: 'admin@123', receiver: 'Sumit100@gmail.com', message: 'Badiya', time: 16},
+                const getAllChatMessage = async () => {
+                    const chatMessageJson = await fetch(BASE_URL + 'allChatMessage/' + me.username);
+                    const chatMessage = await chatMessageJson.json();
+                    setMessageList(chatMessage);
+                };
 
-                    {sender: 'admin@123', receiver: 'Kamal101@gmail.com', message: 'Eid kob hay?', time: 12},
-                    {sender: 'Kamal101@gmail.com', receiver: 'admin@123', message: 'Sanichar ko', time: 13},
-                    {sender: 'admin@123', receiver: 'Kamal101@gmail.com', message: 'Sukriya', time: 15}*/
-                ]);
 
-                setUserList([
-                    {
-                        id: 100,
-                        username: 'Sumit100@gmail.com',
-                        fullName: 'Sumit 100',
-                        image: 'dist/img/avatar.png'
-                    },
-                    {
-                        id: 101,
-                        username: 'Kamal101@gmail.com',
-                        fullName: 'Kamal 101',
-                        image: 'dist/img/avatar2.png'
-                    },
-                    {
-                        id: 102,
-                        username: 'Jamal102@gmail.com',
-                        fullName: 'Jamal 102',
-                        image: 'dist/img/avatar3.png'
-                    },
-                    {
-                        id: 103,
-                        username: 'Iqbal103@gmail.com',
-                        fullName: 'Iqbal 103',
-                        image: 'dist/img/avatar5.png'
-                    },
-                    {
-                        id: 104,
-                        username: 'Sadab104@gmail.com',
-                        fullName: 'Sadab 104',
-                        image: 'dist/img/user1-128x128.jpg'
-                    },
-                    {
-                        id: 105,
-                        username: 'Kalim105@gmail.com',
-                        fullName: 'Kalim 105',
-                        image: 'dist/img/user2-160x160.jpg'
-                    },
-                    {
-                        id: 106,
-                        username: 'Sugan106@gmail.com',
-                        fullName: 'Sugan 106',
-                        image: 'dist/img/user6-128x128.jpg'
-                    },
-                    {
-                        id: 107,
-                        username: 'Malam107@gmail.com',
-                        fullName: 'Malam 107',
-                        image: 'dist/img/user8-128x128.jpg'
-                    }
-                ]);
+                stompClient.connect({}, function (frame) {
 
-                setMe({
-                    id: 1,
-                    username: 'admin@123',
-                    fullName: 'Mr. Admin',
-                    image: 'dist/img/user8-128x128.jpg'
+                    const sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
+                    stompClient.send("/app/welcome", {}, me.username);
+
+                    stompClient.subscribe('/topic/receive-' + sessionId, function (obj) {
+                        const payload = JSON.parse(obj.body);
+                        const currentChattingUsersList1 = !Boolean(JSON.parse(payload.currentChattingUsersList)) ? [] : JSON.parse(payload.currentChattingUsersList);
+                        const messageList1 = !Boolean(JSON.parse(payload.messageList)) ? [] : JSON.parse(payload.messageList);
+                        const userList1 = !Boolean(JSON.parse(payload.userList)) ? [] : JSON.parse(payload.userList);
+                        inboundTextMessageUtilTest(payload.newMessage, userList1, messageList1, currentChattingUsersList1);
+                    });
+
+                    setUserList(myInstitutes.filter(f => f.username !== me.username));
+                    getAllChatMessage();
                 });
 
 
             }, []);
 
+            React.useEffect(() => {
+                if(stompClient.connected)
+                    stompClient.send("/app/userListUpdate", {}, JSON.stringify(userList));
+            }, [userList]);
+
+            React.useEffect(() => {
+                if(stompClient.connected)
+                    stompClient.send("/app/currentChattingUsersListUpdate", {}, JSON.stringify(currentChattingUsersList));
+            }, [currentChattingUsersList]);
+
+            React.useEffect(() => {
+                if(stompClient.connected)
+                    stompClient.send("/app/messageListUpdate", {}, JSON.stringify(messageList));
+            }, [messageList]);
+
+            function inboundTextMessageUtilTest(newMessage, userList1, messageList1, currentChattingUsersList1) {
+                const sender = newMessage.sender;
+
+                const senderObj = userList1.find(us => us.username === sender);
+                if (senderObj === undefined) {
+                    console.info('No Sender Found', sender);
+                    return false;
+                }
+
+                setMessageList([...messageList1, newMessage]);
+
+                const senderExists = currentChattingUsersList1.some(user => user.username === sender);
+                if (senderExists) {
+                    let clistTemp = currentChattingUsersList1.map(obj => obj.username === sender ? {
+                        ...obj, messages: [...obj.messages, newMessage], typingMessage: ''
+                    } : obj);
+
+                    setCurrentChattingUsersList(clistTemp);
+                    const myDiv = document.getElementById("msgBodyId");
+                    myDiv.scrollTop = myDiv.scrollHeight;
+                } else {
+                    let userTemp = [...currentChattingUsersList1, {
+                        ...senderObj,
+                        time: moment().format("x"),
+                        typingMessage: ''
+                    }];
+                    userTemp = [...userTemp].sort((a, b) => (a.time < b.time) ? 1 : -1).slice(0, 3);
+
+                    let i = 0;
+                    userTemp = userTemp.map(us => {
+                        i += CHAT_BOX_OFFSET;
+                        let message = messageList1.filter(f => f.sender === us.username || f.receiver === us.username)
+                            .sort((a, b) => (a.time > b.time) ? 1 : -1);
+                        return {...us, right: i, messages: message};
+                    });
+
+                    userTemp = userTemp.map(obj => obj.username === sender ? {
+                        ...obj, messages: [...obj.messages, newMessage], typingMessage: ''
+                    } : obj);
+
+                    setCurrentChattingUsersList(userTemp);
+                }
+            }
+
+
+            /* Front End */
             const panelELToggle = () => {
                 $(panelEL.current).slideToggle();
             };
@@ -472,6 +560,10 @@
             };
 
             const sendMessageEnter = (e, username) => {
+                if (!Boolean(e.target.value)) {
+                    return false;
+                }
+
                 if (e.key=== 'Enter') {
                     const newMessage = {
                         sender: me.username,
@@ -488,6 +580,10 @@
                     setCurrentChattingUsersList(clistTemp);
                     const myDiv = document.getElementById("msgBodyId");
                     myDiv.scrollTop = myDiv.scrollHeight;
+
+
+                    stompClient.send("/app/sendMessageEnter", {}, JSON.stringify(newMessage));
+
                 }
             };
 
@@ -551,6 +647,8 @@
                 inboundTextMessageUtil(sender, message);
             };
 
+
+
             return <div>
                 <div id="flip" onClick={panelELToggle}>Chat Online ({userList.length})</div>
                 <div id="panel" ref={panelEL}>
@@ -592,21 +690,23 @@
                     </div>
                 )}
 
+                <p>{me.username}</p>
                 <button onClick={() => {
-                    console.table("--------Current Chatting Users List---------------");
-                    // console.table(currentChattingUsersList);
-                    // console.table("-----------------------");
+                    console.log("--currentChattingUsersList--");
+                    console.table(currentChattingUsersList);
+                    console.log("--messageList--");
                     console.table(messageList);
+                    console.log("--userList--");
+                    console.table(userList);
                 }}>Current Chatting Users List
                 </button>
 
                 <br/>
                 Message:<input type="text" id="messageId"/><br/>
                 Sender:<input type="text" id="senderId"/><br/>
-                <button onClick={() => simulate()}>Send</button>
-                <br/>
+                <button onClick={() => simulate()}>Send Message</button>
                 {userList.map((user, i) => (
-                    <p>{user.id}=>{user.fullName}::{user.username}</p>
+                    <p>{user.username}</p>
                 ))}
 
             </div>;
