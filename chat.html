@@ -502,7 +502,7 @@
                 } else {
                     let userTemp = [...currentChattingUsersList1, {
                         ...senderObj,
-                        time: moment().format("x"),
+                        time: new Date().getTime(),
                         typingMessage: ''
                     }];
                     userTemp = [...userTemp].sort((a, b) => (a.time < b.time) ? 1 : -1).slice(0, 3);
@@ -537,7 +537,7 @@
 
                 let userTemp = [...currentChattingUsersList, {
                     ...user,
-                    time: moment().format("x"),
+                    time: new Date().getTime(),
                     typingMessage: ''
                 }];
 
@@ -569,7 +569,7 @@
                         sender: me.username,
                         receiver: username,
                         message: e.target.value,
-                        time: moment().format("x")
+                        time: new Date().getTime()
                     };
                     setMessageList([...messageList, newMessage]);
 
@@ -677,8 +677,11 @@
                         <div className="msg_wrap">
                             <div className="msg_body" id="msgBodyId">
                                 {cu.messages.map(msg =>
-                                    <div
-                                        className={msg.sender === me.username ? 'msg-me' : 'msg-right'}>{msg.message}</div>
+                                    <div>
+                                        <div className={msg.sender === me.username ? 'msg-me' : 'msg-right'}>{msg.message}</div>
+                                        {Boolean(msg.owner) === true ? (msg.owner === me.username ? 'Me' : msg.owner) : ''}
+                                        {`  `+ moment(new Date(Number(msg.time))).fromNow()}
+                                    </div>
                                 )}
                             </div>
                             <div className="msg_footer">
