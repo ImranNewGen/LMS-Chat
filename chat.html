@@ -349,11 +349,15 @@
     <script src= "https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.2/sockjs.min.js"></script>
     <script src= "https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src= "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
     <script src= "https://unpkg.com/react@16/umd/react.production.min.js"></script>
     <script src= "https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
     <script src= "https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+
+    <script src="https://unpkg.com/react-bootstrap@next/dist/react-bootstrap.min.js" crossorigin></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"/>
+
+
     <script type="text/babel">
         const UNAME = prompt('Enter Name', '');
 
@@ -370,68 +374,45 @@
             const [userList, setUserList] = React.useState([]);
             const [currentChattingUsersList, setCurrentChattingUsersList] = React.useState([]);
             const [messageList, setMessageList] = React.useState([]);
-            // const [me, setMe] = React.useState([]);
 
+            const [modalShowAdd, setModalShowAdd] = React.useState(false);
+            const [modalShowEdit, setModalShowEdit] = React.useState(false);
+            const [gname, setGname] = React.useState(null);
+            const [groupDetails, setGroupDetails] = React.useState([]);
+
+            const [userListUpdate, setUserListUpdate] = React.useState(null);
             /*=======================================*/
             const me = {
                 id: 1,
-                username: UNAME + '@gmail.com',
+                username: UNAME,
                 fullName: UNAME,
                 image: 'dist/img/user8-128x128.jpg'
             };
 
 
-            const myInstitutes = [
-                {
-                    id: 100,
-                    username: 'Sumit100@gmail.com',
-                    fullName: 'Sumit 100',
-                    image: 'dist/img/avatar.png'
-                },
-                {
-                    id: 101,
-                    username: 'Kamal101@gmail.com',
-                    fullName: 'Kamal 101',
-                    image: 'dist/img/avatar2.png'
-                },
-                {
-                    id: 102,
-                    username: 'Jamal102@gmail.com',
-                    fullName: 'Jamal 102',
-                    image: 'dist/img/avatar3.png'
-                },
-                {
-                    id: 103,
-                    username: 'Iqbal103@gmail.com',
-                    fullName: 'Iqbal 103',
-                    image: 'dist/img/avatar5.png'
-                },
-                {
-                    id: 104,
-                    username: 'Sadab104@gmail.com',
-                    fullName: 'Sadab 104',
-                    image: 'dist/img/user1-128x128.jpg'
-                },
-                {
-                    id: 105,
-                    username: 'Kalim105@gmail.com',
-                    fullName: 'Kalim 105',
-                    image: 'dist/img/user2-160x160.jpg'
-                },
-                {
-                    id: 106,
-                    username: 'Sugan106@gmail.com',
-                    fullName: 'Sugan 106',
-                    image: 'dist/img/user6-128x128.jpg'
-                },
-                {
-                    id: 107,
-                    username: 'Malam107@gmail.com',
-                    fullName: 'Malam 107',
-                    image: 'dist/img/user8-128x128.jpg'
-                }
-            ];
             /*=======================================*/
+            React.useEffect(() => {
+
+                if (userListUpdate != null) {
+                    const getMyGroupList = async () => {
+                        const myUserListJson = await fetch(BASE_URL + 'myGroupList/' + me.username);
+                        const myUserList = await myUserListJson.json();
+
+                        const myUserListRemoteJson = await fetch(BASE_URL + 'dummyUser/');
+                        const myUserListRemote = await myUserListRemoteJson.json();
+                        setUserList(myUserList.concat(myUserListRemote).filter(f => f.username !== me.username));
+
+                    };
+                    const getAllChatMessage = async () => {
+                        const chatMessageJson = await fetch(BASE_URL + 'allChatMessage/' + me.username);
+                        const chatMessage = await chatMessageJson.json();
+                        setMessageList(chatMessage);
+                    };
+                    getMyGroupList();
+                    getAllChatMessage();
+                }
+            }, [userListUpdate]);
+
 
 
             React.useEffect(() => {
@@ -441,6 +422,16 @@
                     const chatMessageJson = await fetch(BASE_URL + 'allChatMessage/' + me.username);
                     const chatMessage = await chatMessageJson.json();
                     setMessageList(chatMessage);
+                };
+
+                const getMyGroupList = async () => {
+                    const myUserListJson = await fetch(BASE_URL + 'myGroupList/' + me.username);
+                    const myUserList = await myUserListJson.json();
+
+                    const myUserListRemoteJson = await fetch(BASE_URL + 'dummyUser/');
+                    const myUserListRemote = await myUserListRemoteJson.json();
+                    setUserList(myUserList.concat(myUserListRemote).filter(f => f.username !== me.username));
+
                 };
 
 
@@ -457,8 +448,18 @@
                         inboundTextMessageUtilTest(payload.newMessage, userList1, messageList1, currentChattingUsersList1);
                     });
 
-                    setUserList(myInstitutes.filter(f => f.username !== me.username));
+                    stompClient.subscribe('/topic/messageConfirmation-' + sessionId, function (obj) {
+                        alert(obj.body);
+                    });
+
+                    stompClient.subscribe('/topic/userListUpdateAll', function (obj) {
+                        setUserListUpdate(new Date().getTime());
+                    });
+
+                    // setUserList(myInstitutes.filter(f => f.username !== me.username));
                     getAllChatMessage();
+                    getMyGroupList();
+                    setUserListUpdate(new Date().getTime());
                 });
 
 
@@ -647,6 +648,41 @@
                 inboundTextMessageUtil(sender, message);
             };
 
+            const groupActionAdd = (currentUser) => {
+                fetch(BASE_URL + 'getAllMembers/' + currentUser.username).then(response => response.json()).then(members => {
+                    const fList = userList.filter(f => Boolean(f.group) === false);
+                    let gdeatils = fList.map(obj => members.includes(obj.username) ? {
+                        username: obj.username,
+                        active: true
+                    } : {username: obj.username, active: false});
+                    setGroupDetails(gdeatils);
+                    setGname('Group_' + Math.floor(Math.random() * 100));
+                    setModalShowAdd(true);
+                });
+            };
+
+            const groupActionEdit = (currentUser) => {
+                fetch(BASE_URL + 'getAllMembers/' + currentUser.username).then(response => response.json()).then(members => {
+                    const fList = userList.filter(f => Boolean(f.group) === false);
+                    let gdeatils = fList.map(obj => members.includes(obj.username) ? {
+                        username: obj.username,
+                        active: true
+                    } : {username: obj.username, active: false});
+                    setGroupDetails(gdeatils);
+                    setGname(currentUser.username);
+                    setModalShowEdit(true);
+                });
+            };
+
+            const truncatedText = function (str) {
+                let length = 16;
+                let ending = '...';
+                if (str.length > length) {
+                    return str.substring(0, length - ending.length) + ending;
+                } else {
+                    return str;
+                }
+            };
 
 
             return <div>
@@ -656,7 +692,7 @@
                         {userList.map((user, i) => (
                             <div key={i} className="sidebar-user-box" onClick={() => selectChatUser(user)}>
                                 <img src={user.image}/>
-                                <span className="slider-username">{user.fullName}</span>
+                                <span className="slider-username">{truncatedText(user.fullName)}</span>
                             </div>
                         ))}
                     </div>
@@ -665,11 +701,13 @@
                 {currentChattingUsersList.map((cu, i) =>
                     <div key={i} className="msg_box" style={{right: cu.right + 'px'}}>
                         <div className="msg_head">
-                            {cu.fullName}
+                            {truncatedText(cu.fullName)}
                             <div className="float-right">
-                                <i className="fas fa-phone-square-alt pr-2 pl-2"
-                                   onClick={() => alert('Audio' + cu.username)}/>
-                                <i className="fas fa-video pr-2 pl-2" onClick={() => alert('video' + cu.username)}/>
+                                {Boolean(cu.group) === true ?
+                                    <i className="fa fa-cog pr-2 pl-2"
+                                       onClick={() => groupActionEdit(cu)}/> :
+                                    <i className="fa fa-users pr-2 pl-2"
+                                       onClick={() => groupActionAdd(cu)}/>}
                                 <i className="fas fa-times close text-light"
                                    onClick={() => removeChatBox(cu.username)}/>
                             </div>
@@ -680,7 +718,7 @@
                                     <div>
                                         <div className={msg.sender === me.username ? 'msg-me' : 'msg-right'}>{msg.message}</div>
                                         {Boolean(msg.owner) === true ? (msg.owner === me.username ? 'Me' : msg.owner) : ''}
-                                        {`  `+ moment(new Date(Number(msg.time))).fromNow()}
+                                        {`  ` + moment(new Date(Number(msg.time))).fromNow()}
                                     </div>
                                 )}
                             </div>
@@ -712,10 +750,167 @@
                     <p>{user.username}</p>
                 ))}
 
+
+                <GroupEdit show={modalShowEdit} gname={gname} groupDetails={groupDetails}
+                              onHide={() => setModalShowEdit(false)}/>
+
+                <GroupAdd show={modalShowAdd} gname={gname} groupDetails={groupDetails}
+                              onHide={() => setModalShowAdd(false)}/>
             </div>;
 
 
         };
+
+
+
+        function GroupEdit(props) {
+
+            const [grpDetails, setGrpDetails] = React.useState(props.groupDetails);
+            const [oldGname, setOldGname] = React.useState(props.gname);
+            const [newGname, setNewGname] = React.useState(props.gname);
+
+            React.useEffect(() => {
+                setGrpDetails(props.groupDetails);
+                setOldGname(props.gname);
+                setNewGname(props.gname);
+
+            }, [props]);
+
+            const save = () => {
+                props.onHide();
+
+                if (grpDetails.map(m => m.username).includes(newGname)) {
+                    alert("Invalid Group Name " + newGname);
+                    return;
+                }
+
+                const details = grpDetails.filter(f => f.active === true).map(m => m.username);
+                const obj = {
+                    newGname: newGname,
+                    oldGname: oldGname,
+                    details: details
+                };
+                stompClient.send("/app/editGroup", {}, JSON.stringify(obj));
+
+            };
+
+            const leave = () => {
+                props.onHide();
+                stompClient.send("/app/leaveGroup", {}, oldGname);
+            };
+
+            const handleCheckChieldElement = (event) => {
+                let gd = grpDetails.map(obj => obj.username === event.target.id ? {
+                    username: obj.username,
+                    active: !obj.active
+                } : {...obj});
+                setGrpDetails(gd);
+            };
+
+            return (
+                <ReactBootstrap.Modal
+                    {...props}
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <ReactBootstrap.Modal.Header closeButton>
+                        <ReactBootstrap.Modal.Title id="contained-modal-title-vcenter">
+                            <ReactBootstrap.Form.Group controlId="exampleForm.ControlInput1">
+                                <ReactBootstrap.Form.Label>Edit Group Name</ReactBootstrap.Form.Label>
+                                <ReactBootstrap.Form.Control type="text" placeholder="Group Name" value={newGname} onChange={(e) => setNewGname(e.target.value)}/>
+                            </ReactBootstrap.Form.Group>
+                        </ReactBootstrap.Modal.Title>
+                    </ReactBootstrap.Modal.Header>
+                    <ReactBootstrap.Modal.Body>
+                        <ReactBootstrap.Form>
+                            {grpDetails.map((member, i) => (
+                                <ReactBootstrap.Form.Check
+                                    type="switch"
+                                    id={member.username} onClick={handleCheckChieldElement}
+                                    label={member.username}
+                                    checked={member.active}
+                                />
+                            ))}
+                        </ReactBootstrap.Form>
+                    </ReactBootstrap.Modal.Body>
+                    <ReactBootstrap.Modal.Footer>
+                        <ReactBootstrap.Button variant="danger" onClick={leave}>Leave Group</ReactBootstrap.Button>
+                        <ReactBootstrap.Button onClick={save}>Update</ReactBootstrap.Button>
+                    </ReactBootstrap.Modal.Footer>
+                </ReactBootstrap.Modal>
+            );
+        }
+
+        function GroupAdd(props) {
+
+            const [grpDetails, setGrpDetails] = React.useState(props.groupDetails);
+            const [oldGname, setOldGname] = React.useState(props.gname);
+            const [newGname, setNewGname] = React.useState(props.gname);
+
+            React.useEffect(() => {
+                setGrpDetails(props.groupDetails);
+                setOldGname(props.gname);
+                setNewGname(props.gname);
+
+            }, [props]);
+
+            const save = () => {
+                props.onHide();
+
+                if (grpDetails.map(m => m.username).includes(newGname)) {
+                    alert("Invalid Group Name " + newGname);
+                    return;
+                }
+
+                const details = grpDetails.filter(f => f.active === true).map(m => m.username);
+                const obj = {
+                    newGname: newGname,
+                    oldGname: oldGname,
+                    details: details
+                };
+                stompClient.send("/app/addGroup", {}, JSON.stringify(obj));
+            };
+
+            const handleCheckChieldElement = (event) => {
+                let gd = grpDetails.map(obj => obj.username === event.target.id ? {
+                    username: obj.username,
+                    active: !obj.active
+                } : {...obj});
+                setGrpDetails(gd);
+            };
+
+            return (
+                <ReactBootstrap.Modal
+                    {...props}
+                    aria-labelledby="contained-modal-title-vcenter"
+                    centered
+                >
+                    <ReactBootstrap.Modal.Header closeButton>
+                        <ReactBootstrap.Modal.Title id="contained-modal-title-vcenter">
+                            <ReactBootstrap.Form.Group controlId="exampleForm.ControlInput1">
+                                <ReactBootstrap.Form.Label>Create Group Name</ReactBootstrap.Form.Label>
+                                <ReactBootstrap.Form.Control type="text" placeholder="Group Name" value={newGname} onChange={(e) => setNewGname(e.target.value)}/>
+                            </ReactBootstrap.Form.Group>
+                        </ReactBootstrap.Modal.Title>
+                    </ReactBootstrap.Modal.Header>
+                    <ReactBootstrap.Modal.Body>
+                        <ReactBootstrap.Form>
+                            {grpDetails.map((member, i) => (
+                                <ReactBootstrap.Form.Check
+                                    type="switch"
+                                    id={member.username} onClick={handleCheckChieldElement}
+                                    label={member.username}
+                                    checked={member.active}
+                                />
+                            ))}
+                        </ReactBootstrap.Form>
+                    </ReactBootstrap.Modal.Body>
+                    <ReactBootstrap.Modal.Footer>
+                        <ReactBootstrap.Button onClick={save}>Add</ReactBootstrap.Button>
+                    </ReactBootstrap.Modal.Footer>
+                </ReactBootstrap.Modal>
+            );
+        }
 
 
         ReactDOM.render(<Main />, document.getElementById('root'));
